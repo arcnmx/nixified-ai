@@ -15,7 +15,7 @@
       flake = false;
     };
     koboldai-src = {
-      url = "github:koboldai/koboldai-client/1.19.2";
+      url = "github:koboldai/koboldai-client";
       flake = false;
     };
     webui-src = {

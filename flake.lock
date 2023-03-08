@@ -136,16 +136,15 @@
     "koboldai-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1668957963,
-        "narHash": "sha256-fKQ/6LiMmrfSWczC5kcf6M9cpuF9dDYl2gJ4+6ZLSdY=",
+        "lastModified": 1678305123,
+        "narHash": "sha256-idai8KxW3ukKTE80KEvK3EZMY/uHz8A5jnhYVkTXgXs=",
         "owner": "koboldai",
         "repo": "koboldai-client",
-        "rev": "f2077b8e58db6bd47a62bf9ed2649bb0711f9678",
+        "rev": "ffa5c0bc13ae98f10d521da3cdec665337a87bf1",
         "type": "github"
       },
       "original": {
         "owner": "koboldai",
-        "ref": "1.19.2",
         "repo": "koboldai-client",
         "type": "github"
       }

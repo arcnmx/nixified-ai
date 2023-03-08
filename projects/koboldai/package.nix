@@ -112,6 +112,7 @@ in pythonPackages.buildPythonPackage {
     lupa
     memcached
     accelerate
+    safetensors
   ];
 
   nativeBuildInputs = [
@@ -120,7 +121,7 @@ in pythonPackages.buildPythonPackage {
   ];
 
   pythonRemoveDeps = [ "mkultra" "flask-ngrok" "flask-cloudflared" ];
-  pythonRelaxDeps = [ "dnspython" "lupa" "torch" "transformers" ];
+  pythonRelaxDeps = [ "dnspython" "huggingface_hub" "lupa" "torch" "transformers" ];
 
   setup = ''
     from io import open
