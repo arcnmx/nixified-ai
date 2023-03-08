@@ -48,6 +48,7 @@ pkgs: {
     opencv-python-headless = final.opencv-python;
     opencv-python = final.opencv4;
 
+    bitsandbytes = callPackage ../../packages/bitsandbytes { };
     safetensors = callPackage ../../packages/safetensors { };
     tensorflow-io-bin = callPackage ../../packages/tensorflow-io-bin { };
     compel = callPackage ../../packages/compel { };

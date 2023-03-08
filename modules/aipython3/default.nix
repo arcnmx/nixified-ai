@@ -1,11 +1,15 @@
-{ lib, ... }:
+{ lib, inputs, ... }:
 
 {
-  perSystem = { pkgs, ... }: {
+  perSystem = { pkgs, system, ... }: {
     dependencySets = let
       overlays = import ./overlays.nix pkgs;
 
       mkPythonPackages = overlayList: let
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         python3' = pkgs.python3.override {
           packageOverrides = lib.composeManyExtensions overlayList;
         };
