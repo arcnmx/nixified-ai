@@ -1,15 +1,30 @@
 
 <p align="center">
 <br/>
-<a href="github.com/nixified-ai">
+<a href="https://github.com/nixified-ai">
   <img src="https://raw.githubusercontent.com/nixified-ai/flake/images/nixified.ai-text.png" width=60% height=60% title="nixified.ai"/>
 </a>
 </p>
 
-## [Contact](mailto:matthew.croughan@nix.how) / [GitHub](https://github.com/nixified-ai/flake)
+## [Contact](mailto:matthew.croughan@nix.how) / [GitHub](https://github.com/nixified-ai/flake) / [Chat](https://matrix.to/#/#nixified.ai:matrix.org)
+
+## <iframe src="https://github.com/sponsors/nixified-ai/button" title="Sponsor nixified-ai" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+
+<p align="center">
+Binary Cache sponsored by <a href="https://cachix.org"><img height="20" style="filter: invert(1);" src="https://user-images.githubusercontent.com/126339/130430964-7794b915-89d1-4b08-94be-3d32444dc8b2.png"></a>
+</p>
+
+<p align="center">
+Continuous Integration sponsored by <a href="https://hercules-ci.com"><img height="20" src="https://hercules-ci.com/assets/hercules.460470fa.png"></a> [Hercules CI](https://hercules-ci.com)
+</p>
 
 ---
 
+## Introduction Video
+
+<div style="overflow:hidden; padding-bottom:56.25%; position:relative; height:0;" class="video-responsive">
+<iframe style="left:0; top:0; height:100%; width:100%; position:absolute;" width="420" height="315" src="https://www.youtube.com/embed/wJ0D7MrPNOw" frameborder="0" allowfullscreen></iframe>
+</div>
 
 ## Making AI reproducible and easy to run
 
@@ -80,7 +95,7 @@ InvokeAI is an implementation of Stable Diffusion, the open source text-to-image
 
 #### Get started
 
-- `nix run github:nixified-ai/flake#invokeai-amd`
-- `nix run github:nixified-ai/flake#invokeai-nvidia`
+- `nix run github:nixified-ai/flake#invokeai-amd -- --web`
+- `nix run github:nixified-ai/flake#invokeai-nvidia -- --web`
 
 ![](https://raw.githubusercontent.com/nixified-ai/flake/images/invokeai.webp)
