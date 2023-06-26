@@ -40,6 +40,9 @@
 , timm
 , fairscale
 , inflection
+, tomesd
+, pytorch-lightning
+, numexpr
 
 , diffusers
 }@args:
@@ -77,14 +80,14 @@ buildPythonPackage {
     done
   '';
 
-  pythonRelaxDeps = [ "fairscale" "timm" "transformers" ];
-  pythonRemoveDeps = [ "invisible-watermark" "opencv-python" ];
+  pythonRelaxDeps = [ "timm" "transformers" ];
+  pythonRemoveDeps = [ "opencv-contrib-python" ];
 
   dontRewriteSymlinks = true;
 
   inherit (python) sitePackages;
-  dataPaths = [ "artists.csv" "models" "embeddings" "extensions" "textual_inversion_templates" "repositories" ];
-  scriptDirs = [ "javascript" "localizations" ];
+  dataPaths = [ "configs" "models" "embeddings" "extensions-builtin" "textual_inversion_templates" "repositories" "localizations" ];
+  scriptDirs = [ "javascript" ];
   scriptFiles = [ "style.css" "script.js" ];
   postInstall = ''
     install -d $out/lib/stable-diffusion-webui
@@ -99,6 +102,7 @@ buildPythonPackage {
       ln -s $out/$sitePackages/$script_file $out/lib/stable-diffusion-webui/
     done
 
+    buildPythonPath "$out $propagatedBuildInputs"
     substituteAll $wrapperPath $out/bin/webui
     chmod +x $out/bin/*
   '';
@@ -117,7 +121,7 @@ buildPythonPackage {
       version='@version@',
       install_requires=requirements,
       py_modules=['webui'],
-      packages=['modules'] + glob('modules/*/'),
+      packages=['modules'] + glob('modules/**/', recursive=True),
       scripts=[
         'launch.py', 'webui.py',
       ] + glob('scripts/*.py'),
@@ -132,6 +136,8 @@ buildPythonPackage {
     )
   '';
 
+  dontWrapPythonPrograms = true;
+
   wrapper = ''
     if [[ -z ''${SD_WEBUI_SCRIPT_PATH-} ]]; then
       export SD_WEBUI_SCRIPT_PATH=''${XDG_DATA_HOME-$HOME/.local/share/stable-diffusion-webui}
@@ -143,6 +149,7 @@ buildPythonPackage {
     fi
     cp -nr --no-preserve=mode @out@/lib/stable-diffusion-webui/* "$SD_WEBUI_SCRIPT_PATH"
     cd "$SD_WEBUI_SCRIPT_PATH"
+    export PYTHONPATH="@out@/bin:@program_PYTHONPATH@"
     exec @out@/bin/webui.py "$@"
   '';
 
@@ -181,6 +188,11 @@ buildPythonPackage {
     timm
     fairscale
     inflection
+    tomesd
+    pytorch-lightning
+
+    # Slight hack: provided because it's used in extensions, e.g. Deforum
+    numexpr
   ];
 
   doCheck = false;

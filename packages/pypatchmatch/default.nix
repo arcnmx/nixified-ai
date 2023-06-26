@@ -18,7 +18,6 @@
 , lightgbm
 , catboost
 , pyspark
-, sentencepiece
 , tqdm
 , slicer
 , numba
@@ -32,7 +31,6 @@
 , requests
 , regex
 , importlib-metadata
-, huggingface-hub
 , symlinkJoin
 }:
 

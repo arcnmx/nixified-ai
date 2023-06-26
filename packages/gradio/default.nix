@@ -5,9 +5,11 @@
 , writeTextFile
 , setuptools
 , analytics-python
+, aiofiles
 , aiohttp
 , fastapi
 , ffmpy
+, gradio-client
 , markdown-it-py
 , linkify-it-py
 , mdit-py-plugins
@@ -29,7 +31,6 @@
 , typing-extensions
 , pytest-asyncio
 , mlflow
-, huggingface-hub
 , transformers
 , wandb
 , respx
@@ -41,11 +42,14 @@
 , hatch-fancy-pypi-readme
 , pytestCheckHook
 , websockets
+, semantic-version
+, altair
+, blendmodes
 }:
 
 buildPythonPackage rec {
   pname = "gradio";
-  version = "3.5";
+  version = "3.31.0";
   disabled = pythonOlder "3.7";
   format = "pyproject";
 
@@ -53,7 +57,7 @@ buildPythonPackage rec {
   # and its releases are also more frequent than github tags
   src = fetchPypi {
     inherit pname version;
-    sha256 = "sha256-8MmpH2N1twrPGHS+HBLDWRtpg2Gd1rQzulbOEDr3rNQ=";
+    sha256 = "sha256-4YIhhj64daLOfOqmzsJC8SaNym/OOwe/5fpb0BA8N90=";
   };
 
   nativeBuildInputs = [
@@ -63,9 +67,13 @@ buildPythonPackage rec {
   ];
   propagatedBuildInputs = [
     analytics-python
+    aiofiles
     aiohttp
+    altair
+    blendmodes
     fastapi
     ffmpy
+    gradio-client
     matplotlib
     numpy
     orjson
@@ -83,6 +91,7 @@ buildPythonPackage rec {
     pydantic
     websockets
     markdown-it-py
+    semantic-version
   ] ++ markdown-it-py.optional-dependencies.plugins
     ++ markdown-it-py.optional-dependencies.linkify;
 
@@ -90,7 +99,8 @@ buildPythonPackage rec {
     # Unpin h11, as its version was only pinned to aid dependency resolution.
     # Basically a revert of https://github.com/gradio-app/gradio/pull/1680
     substituteInPlace requirements.txt \
-      --replace "h11<0.13,>=0.11" ""
+      --replace "h11<0.13,>=0.11" "" \
+      --replace "mdit-py-plugins<=0.3.3" "mdit-py-plugins"
   '';
 
   # TODO FIXME
