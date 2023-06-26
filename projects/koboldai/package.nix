@@ -4,6 +4,7 @@
 , fetchFromGitHub
 , lndir
 , stateDir ? "$HOME/.koboldai/state"
+, libdrm
 }:
 let
   pythonPackages = aipython3.overrideScope (final: prev: {
@@ -111,71 +112,42 @@ in pythonPackages.buildPythonPackage {
     apispec-webframeworks
     lupa
     memcached
-    accelerate
-    safetensors
-  ];
+  ]);
 
-  nativeBuildInputs = [
-    lndir
-    pythonPackages.pythonRelaxDepsHook
-  ];
-
-  pythonRemoveDeps = [ "mkultra" "flask-ngrok" "flask-cloudflared" ];
-  pythonRelaxDeps = [ "dnspython" "huggingface_hub" "lupa" "torch" "transformers" ];
-
-  setup = ''
-    from io import open
-    from glob import glob
-    from setuptools import find_packages, setup
-
-    with open('requirements.txt') as f:
-      requirements = f.read().splitlines()
-
-    py_modules = [m.removesuffix('.py') for m in glob('*.py')]
-    py_modules.remove('setup')
-    py_modules.remove('aiserver')
-    setup(
-      name='@pname@',
-      version='@version@',
-      install_requires=requirements,
-      py_modules=py_modules,
-      scripts=[
-        'aiserver.py',
-      ],
-    )
-  '';
-
-  wrapper = ''
-    set -eu
-
-    if [ -d "/usr/lib/wsl/lib" ]; then
-      echo "Running via WSL (Windows Subsystem for Linux), setting LD_LIBRARY_PATH"
-      set -x
-      export LD_LIBRARY_PATH="/usr/lib/wsl/lib"
-      set +x
+  # See note about consumer GPUs:
+  # https://docs.amd.com/bundle/ROCm-Deep-Learning-Guide-v5.4.3/page/Troubleshooting.html
+  rocmInit = ''
+    if [ ! -e /tmp/nix-pytorch-rocm___/amdgpu.ids ]
+    then
+        mkdir -p /tmp/nix-pytorch-rocm___
+        ln -s ${libdrm}/share/libdrm/amdgpu.ids /tmp/nix-pytorch-rocm___/amdgpu.ids
     fi
-
-    if [[ -d @stateDir@ ]]; then
-      find @stateDir@ -type l -lname "${builtins.storeDir}/*-@pname@-*/*" -delete
-    else
-      mkdir -p @stateDir@
-    fi
-    cd @stateDir@
-
-    cp -nr --no-preserve=mode @out@/lib/@pname@/* ./
-    mkdir -p cache
-
-    exec @out@/bin/aiserver.py "$@"
+    export HSA_OVERRIDE_GFX_VERSION=''${HSA_OVERRIDE_GFX_VERSION-'10.3.0'}
   '';
-
-  meta = {
-    maintainers = [ lib.maintainers.matthewcroughan ];
-    license = lib.licenses.agpl3;
-    description = "browser-based front-end for AI-assisted writing with multiple local & remote AI models";
-    homepage = "https://github.com/KoboldAI/KoboldAI-Client";
-    mainProgram = "koboldai";
-  };
-  passthru = {
-    inherit pythonPackages;
-  };
-}
+in
+(writeShellScriptBin "koboldai" ''
+  if [ -d "/usr/lib/wsl/lib" ]
+  then
+    echo "Running via WSL (Windows Subsystem for Linux), setting LD_LIBRARY_PATH"
+    set -x
+    export LD_LIBRARY_PATH="/usr/lib/wsl/lib"
+    set +x
+  fi
+  rm -rf ${tmpDir}
+  mkdir -p ${tmpDir}
+  mkdir -p ${stateDir}/models ${stateDir}/cache ${stateDir}/settings ${stateDir}/userscripts
+  ln -s ${stateDir}/models/   ${tmpDir}/models
+  ln -s ${stateDir}/settings/ ${tmpDir}/settings
+  ln -s ${stateDir}/userscripts/ ${tmpDir}/userscripts
+  ${lib.optionalString (aipython3.torch.rocmSupport or false) rocmInit}
+  ${koboldPython}/bin/python ${patchedSrc}/aiserver.py $@
+'').overrideAttrs
+  (_: {
+    meta = {
+      maintainers = [ lib.maintainers.matthewcroughan ];
+      license = lib.licenses.agpl3;
+      description = "browser-based front-end for AI-assisted writing with multiple local & remote AI models";
+      homepage = "https://github.com/KoboldAI/KoboldAI-Client";
+      mainProgram = "koboldai";
+    };
+  })

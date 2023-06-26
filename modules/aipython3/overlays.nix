@@ -5,11 +5,7 @@ pkgs: {
       pythonRelaxDeps = [ "protobuf" ];
     });
   in {
-    pytorch-lightning = relaxProtobuf prev.pytorch-lightning;
-    wandb = relaxProtobuf prev.wandb;
     markdown-it-py = prev.markdown-it-py.overrideAttrs (old: {
-      nativeBuildInputs = old.nativeBuildInputs ++ [ final.pythonRelaxDepsHook ];
-      pythonRelaxDeps = [ "linkify-it-py" ];
       passthru = old.passthru // {
         optional-dependencies = with final; {
           linkify = [ linkify-it-py ];
@@ -17,9 +13,10 @@ pkgs: {
         };
       };
     });
-    filterpy = prev.filterpy.overrideAttrs (old: {
-      doInstallCheck = false;
-    });
+    wandb = prev.wandb.overrideAttrs (old: { doInstallCheck = false; });
+    dask = prev.dask.overrideAttrs (old: { doInstallCheck = false; });
+    slicer = prev.slicer.overrideAttrs (old: { doInstallCheck = false; });
+    tifffile = prev.tifffile.overrideAttrs (old: { doInstallCheck = false; });
     shap = prev.shap.overrideAttrs (old: {
       doInstallCheck = false;
       propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.packaging ];
@@ -39,20 +36,16 @@ pkgs: {
   extraDeps = final: prev: let
     rm = d: d.overrideAttrs (old: {
       nativeBuildInputs = old.nativeBuildInputs ++ [ final.pythonRelaxDepsHook ];
-      pythonRemoveDeps = [ "opencv-python-headless" "opencv-python" "tb-nightly" "clip" ];
+      pythonRemoveDeps = [ "opencv-python" "opencv-python-headless" "tb-nightly" "clip" ];
     });
     callPackage = final.callPackage;
     rmCallPackage = path: args: rm (callPackage path args);
   in {
-    scikit-image = final.scikitimage;
     opencv-python-headless = final.opencv-python;
     opencv-python = final.opencv4;
 
-    bitsandbytes = callPackage ../../packages/bitsandbytes { };
-    safetensors = callPackage ../../packages/safetensors { };
     tensorflow-io-bin = callPackage ../../packages/tensorflow-io-bin { };
     compel = callPackage ../../packages/compel { };
-    apispec-webframeworks = callPackage ../../packages/apispec-webframeworks { };
     pydeprecate = callPackage ../../packages/pydeprecate { };
     taming-transformers-rom1504 =
       callPackage ../../packages/taming-transformers-rom1504 { };
@@ -64,7 +57,6 @@ pkgs: {
     realesrgan = rmCallPackage ../../packages/realesrgan { };
     codeformer = callPackage ../../packages/codeformer { };
     clipseg = rmCallPackage ../../packages/clipseg { };
-    kornia = callPackage ../../packages/kornia { };
     lpips = callPackage ../../packages/lpips { };
     ffmpy = callPackage ../../packages/ffmpy { };
     picklescan = callPackage ../../packages/picklescan { };
@@ -73,19 +65,18 @@ pkgs: {
     fonts = callPackage ../../packages/fonts { };
     font-roboto = callPackage ../../packages/font-roboto { };
     analytics-python = callPackage ../../packages/analytics-python { };
+    blendmodes = callPackage ../../packages/blendmodes { };
+    gradio-client = callPackage ../../packages/gradio-client { };
     gradio = callPackage ../../packages/gradio { };
     blip = callPackage ../../packages/blip { };
     fairscale = callPackage ../../packages/fairscale { };
     torch-fidelity = callPackage ../../packages/torch-fidelity { };
-    resize-right = callPackage ../../packages/resize-right { };
-    torchdiffeq = callPackage ../../packages/torchdiffeq { };
-    k-diffusion = callPackage ../../packages/k-diffusion { };
-    accelerate = callPackage ../../packages/accelerate { };
-    clip-anytorch = callPackage ../../packages/clip-anytorch { };
-    clean-fid = callPackage ../../packages/clean-fid { };
     getpass-asterisk = callPackage ../../packages/getpass-asterisk { };
     stable-diffusion = callPackage ../../packages/stable-diffusion { };
     deepdanbooru = callPackage ../../packages/deepdanbooru { };
+    tomesd = callPackage ../../packages/tomesd { };
+    pytorch-lightning = callPackage ../../packages/pytorch-lightning { };
+    openclip = callPackage ../../packages/openclip { };
 
     tensorflow-io = final.tensorflow-io-bin;
   };
@@ -101,6 +92,10 @@ pkgs: {
         url = "https://download.pytorch.org/whl/rocm5.1.1/torch-1.13.1%2Brocm5.1.1-cp310-cp310-linux_x86_64.whl";
         hash = "sha256-qUwAL3L9ODy9hjne8jZQRoG4BxvXXLT7cAy9RbM837A=";
       };
+      postFixup = (old.postFixup or "") + ''
+        ${pkgs.gnused}/bin/sed -i s,/opt/amdgpu/share/libdrm/amdgpu.ids,/tmp/nix-pytorch-rocm___/amdgpu.ids,g $out/${final.python.sitePackages}/torch/lib/libdrm_amdgpu.so
+      '';
+      rocmSupport = true;
     });
     torchvision-bin = prev.torchvision-bin.overrideAttrs (old: {
       src = pkgs.fetchurl {

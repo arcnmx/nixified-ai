@@ -8,6 +8,15 @@
 
 ---
 
+#### Discussion
+
+Anyone interested in discussing nixified.ai in realtime can join our matrix channel
+
+- In a Matrix client you can type `/join #nixified.ai:matrix.org`
+- Via the web you can join via https://matrix.to/#/#nixified.ai:matrix.org
+
+#### The Goal
+
 The goal of nixified.ai is to simplify and make available a large repository of
 AI executable code that would otherwise be impractical to run yourself, due to
 package management and complexity issues.
@@ -36,7 +45,7 @@ If you're interested in running nixified.ai in the Windows Subsystem for Linux, 
 
 1. Execute the following in Powershell
 
-   `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/nixified-ai/flake/install.ps1'))`
+   `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/nixified-ai/flake/master/install.ps1'))`
 
 The WSL must be installed via the Windows Store. The script will make an attempt to enable it automatically, but this only works on a fresh system, not one that has been modified manually.
 

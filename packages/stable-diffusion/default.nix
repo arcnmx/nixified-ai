@@ -2,6 +2,7 @@
   buildPythonPackage
 , pythonRelaxDepsHook
 , fetchFromGitHub
+, fetchpatch
 
 , torch
 , torchvision
@@ -23,17 +24,28 @@
 , transformers
 , kornia
 , k-diffusion
+
+, hatchling
+, openclip
 }:
 buildPythonPackage rec {
   pname = "stable-diffusion";
-  version = "2022-08-22";
+  version = "2023-06-23";
+  format = "pyproject";
 
   src = fetchFromGitHub {
-    owner = "CompVis";
+    owner = "Stability-AI";
     repo = pname;
-    rev = "69ae4b35e0a0f6ee1af8bb9a5d0016ccb27e36dc";
-    sha256 = "sha256-3YkSUATD/73nJFm4os3ZyNU8koabGB/6iR0XbTUQmVY=";
+    rev = "cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf";
+    sha256 = "sha256-yEtrz/JTq53JDI4NZI26KsD8LAgiViwiNaB2i1CBs/I=";
   };
+
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/Stability-AI/stablediffusion/commit/ab12d81663517796c18c7bf9266e7343cf0b1705.patch";
+      sha256 = "sha256-wYrm4rBvt3mgG/tCRVSiuVXa7xa7+R46wq/5N1p/M2A=";
+    })
+  ];
 
   nativeBuildInputs = [ pythonRelaxDepsHook ];
   pythonRelaxDeps = [
@@ -41,6 +53,10 @@ buildPythonPackage rec {
   ];
 
   propagatedBuildInputs = [
+    hatchling
+
+    openclip
+
     torch
     torchvision
     numpy

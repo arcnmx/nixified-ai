@@ -15,7 +15,6 @@
 , lightgbm
 , catboost
 , pyspark
-, sentencepiece
 , tqdm
 , slicer
 , numba
