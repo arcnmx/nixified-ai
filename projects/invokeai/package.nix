@@ -71,6 +71,7 @@ pythonPackages.buildPythonPackage {
     getpass-asterisk
     safetensors
     datasets
+    packaging
   ];
   nativeBuildInputs = [ pythonPackages.pythonRelaxDepsHook ];
   pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
