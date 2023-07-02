@@ -26,13 +26,13 @@
 }:
 buildPythonPackage rec {
   pname = "stable-diffusion";
-  version = "2022-08-22";
+  version = "2022-11-16";
 
   src = fetchFromGitHub {
     owner = "CompVis";
     repo = pname;
-    rev = "69ae4b35e0a0f6ee1af8bb9a5d0016ccb27e36dc";
-    sha256 = "sha256-3YkSUATD/73nJFm4os3ZyNU8koabGB/6iR0XbTUQmVY=";
+    rev = "21f890f9da3cfbeaba8e2ac3c425ee9e998d5229";
+    sha256 = "sha256-zrjiFOQM5uTTCRtaHfX/fUW2INbroCD96guJSMdaKyI=";
   };
 
   nativeBuildInputs = [ pythonRelaxDepsHook ];
