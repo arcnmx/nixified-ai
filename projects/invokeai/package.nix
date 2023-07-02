@@ -2,11 +2,25 @@
 # misc
 , lib
 , src
+, fetchFromGitHub
 # extra deps
 , libdrm
 }:
 
 let
+  pythonPackages = aipython3.overrideScope (final: prev: {
+    transformers = prev.transformers.overrideAttrs (old: rec {
+       propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.huggingface-hub ];
+       pname = "transformers";
+       version = "4.26.1";
+       src = fetchFromGitHub {
+         owner = "huggingface";
+         repo = pname;
+         rev = "refs/tags/v${version}";
+         hash = "sha256-JRW3uSPgWgvtH4WFQLHD1ma8L1qq05MSemJbcdYMC6E=";
+       };
+    });
+  });
   getVersion = lib.flip lib.pipe [
     (src: builtins.readFile "${src}/ldm/invoke/_version.py")
     (builtins.match ".*__version__='([^']+)'.*")
@@ -14,12 +28,12 @@ let
   ];
 in
 
-aipython3.buildPythonPackage {
+pythonPackages.buildPythonPackage {
   pname = "InvokeAI";
   format = "pyproject";
   version = getVersion src;
   inherit src;
-  propagatedBuildInputs = with aipython3; [
+  propagatedBuildInputs = with pythonPackages; [
     numpy
     dnspython
     albumentations
@@ -58,7 +72,7 @@ aipython3.buildPythonPackage {
     safetensors
     datasets
   ];
-  nativeBuildInputs = [ aipython3.pythonRelaxDepsHook ];
+  nativeBuildInputs = [ pythonPackages.pythonRelaxDepsHook ];
   pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
   pythonRelaxDeps = [ "dnspython" "protobuf" "flask" "flask-socketio" "pytorch-lightning" ];
   makeWrapperArgs = [
@@ -72,7 +86,7 @@ aipython3.buildPythonPackage {
       fi
       '
     ''
-  ] ++ lib.optionals (aipython3.torch.rocmSupport or false) [
+  ] ++ lib.optionals (pythonPackages.torch.rocmSupport or false) [
     '' --run '
       if [ ! -e /tmp/nix-pytorch-rocm___/amdgpu.ids ]
       then
