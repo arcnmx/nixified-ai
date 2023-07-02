@@ -78,6 +78,7 @@ pkgs: {
     torch-fidelity = callPackage ../../packages/torch-fidelity { };
     resize-right = callPackage ../../packages/resize-right { };
     torchdiffeq = callPackage ../../packages/torchdiffeq { };
+    torchsde = callPackage ../../packages/torchsde { };
     k-diffusion = callPackage ../../packages/k-diffusion { };
     accelerate = callPackage ../../packages/accelerate { };
     trampoline = callPackage ../../packages/trampoline { };
