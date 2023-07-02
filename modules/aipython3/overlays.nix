@@ -80,6 +80,7 @@ pkgs: {
     torchdiffeq = callPackage ../../packages/torchdiffeq { };
     k-diffusion = callPackage ../../packages/k-diffusion { };
     accelerate = callPackage ../../packages/accelerate { };
+    trampoline = callPackage ../../packages/trampoline { };
     clip-anytorch = callPackage ../../packages/clip-anytorch { };
     clean-fid = callPackage ../../packages/clean-fid { };
     getpass-asterisk = callPackage ../../packages/getpass-asterisk { };
