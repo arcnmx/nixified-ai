@@ -21,12 +21,12 @@
 let
 
   pname = "safetensors";
-  version = "0.2.8";
+  version = "0.3.1";
 
   patchedSrc = runCommand "patched-src" {
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-JyCyCmo4x5ncp5vXbK7qwvffWFqdT31Z+n4o7/nMsn8=";
+      hash = "sha256-Vx2lb/jQvsiuVJI7YhzamNNtzvEP6zb9SSxNDCzQ6Gk=";
     };
   } ''
     unpackPhase
@@ -43,7 +43,7 @@ buildPythonPackage {
   cargoDeps = rustPlatform.fetchCargoTarball {
     src = patchedSrc;
     name = "${pname}-${version}";
-    hash = "sha256-IZKaw4NquK/BbIv1xkMFgNR20vve4H6Re76mvxtcNUA=";
+    hash = "sha256-s2La3wjH3V/bHnTV28rYkAM8d+Av6Lg53f1zW2zRyYM=";
   };
 
   nativeBuildInputs = [
