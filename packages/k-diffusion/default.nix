@@ -8,11 +8,11 @@
 
 buildPythonPackage rec {
   pname = "k-diffusion";
-  version = "0.0.14";
+  version = "0.0.15";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "sha256-b7mxIA64tClz96s78GCI+kBJf/umi2ClCNjDYlqjTrs=";
+    sha256 = "sha256-V+PM4DhAKjDWSQOeqf7+FbQSED6nBI8pWNI5g63b00U=";
   };
 
   propagatedBuildInputs = [
