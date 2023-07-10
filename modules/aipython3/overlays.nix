@@ -20,6 +20,19 @@ pkgs: {
     filterpy = prev.filterpy.overrideAttrs (old: {
       doInstallCheck = false;
     });
+    huggingface-hub = let
+      huggingface-hub = prev.huggingface-hub.override (old: pkgs.lib.optionalAttrs (old ? ruamel-yaml) {
+        ruamel-yaml = null;
+      });
+    in huggingface-hub.overrideAttrs (old: rec {
+      version = "0.13.4";
+      src = pkgs.fetchFromGitHub {
+        owner = "huggingface";
+        repo = "huggingface_hub";
+        rev = "v${version}";
+        sha256 = "sha256-gauEwI923jUd3kTZpQ2VRlpHNudytz5k10n1yFo0Mm8=";
+      };
+    });
     shap = prev.shap.overrideAttrs (old: {
       doInstallCheck = false;
       propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.packaging ];
