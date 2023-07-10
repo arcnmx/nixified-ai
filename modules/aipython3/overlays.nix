@@ -49,6 +49,7 @@ pkgs: {
     opencv-python = final.opencv4;
 
     fastapi-socketio = callPackage ../../packages/fastapi/socketio.nix { };
+    fastapi-events = callPackage ../../packages/fastapi/events.nix { };
 
     safetensors = callPackage ../../packages/safetensors { };
     tensorflow-io-bin = callPackage ../../packages/tensorflow-io-bin { };
