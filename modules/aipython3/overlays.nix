@@ -69,6 +69,7 @@ pkgs: {
     picklescan = callPackage ../../packages/picklescan { };
     diffusers = callPackage ../../packages/diffusers { };
     pypatchmatch = callPackage ../../packages/pypatchmatch { };
+    peft = callPackage ../../packages/peft { };
     fonts = callPackage ../../packages/fonts { };
     font-roboto = callPackage ../../packages/font-roboto { };
     analytics-python = callPackage ../../packages/analytics-python { };
