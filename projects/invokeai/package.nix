@@ -11,11 +11,10 @@ let
   pythonPackages = aipython3.overrideScope (final: prev: {
     transformers = prev.transformers.overrideAttrs (old: rec {
        propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.huggingface-hub ];
-       pname = "transformers";
        version = "4.26.1";
        src = fetchFromGitHub {
          owner = "huggingface";
-         repo = pname;
+         repo = old.pname;
          rev = "refs/tags/v${version}";
          hash = "sha256-JRW3uSPgWgvtH4WFQLHD1ma8L1qq05MSemJbcdYMC6E=";
        };
@@ -61,6 +60,11 @@ pythonPackages.buildPythonPackage {
     realesrgan
     pillow
     send2trash
+    fastapi
+    fastapi-events
+    fastapi-socketio
+    peft
+    python-multipart
     flask
     flask-socketio
     flask-cors
@@ -75,7 +79,7 @@ pythonPackages.buildPythonPackage {
   ];
   nativeBuildInputs = [ pythonPackages.pythonRelaxDepsHook ];
   pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
-  pythonRelaxDeps = [ "dnspython" "protobuf" "flask" "flask-socketio" "pytorch-lightning" ];
+  pythonRelaxDeps = [ "dnspython" "protobuf" "flask" "flask-socketio" "pytorch-lightning" "fastapi" ];
   makeWrapperArgs = [
     '' --run '
       if [ -d "/usr/lib/wsl/lib" ]
